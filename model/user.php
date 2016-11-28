@@ -33,4 +33,12 @@ function check_existence_of_user_mobile($mobile)
         
 }
 
+function user_state($user_id)
+{
+    
+        $check=user_state_db($user_id);
+        return $check;
+        
+}
+
 ?>

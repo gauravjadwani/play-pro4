@@ -6,26 +6,25 @@ $GLOBALS['r']->connect($GLOBALS['ip']);
 function check_existence_of_user_id($user_id)
 {
     
- $check=$GLOBALS['r']->exits($user_id);
+ $check=$GLOBALS['r']->exists('user:'.$user_id);
     return $check;
-    }
+}
 
 function check_existence_of_user_password($user_id,$user_password)
 {
  
      $check_password=$GLOBALS['r']->hget('user:'.$user_id,'password_hash');
-    if (password_verify($user_password,$check_hash)) 
+    if(password_verify($user_password,$check_hash)) 
     {
         return true;
     }
     return false;
 }
 
-function state_user($user_id)
+function state_user_db($user_id)
 {
-
-    
-    
+$result=$r->zrank('state:user',$user_id);
+return result;    
 }
 
 function check_existence_of_user_email_db($email)
@@ -79,9 +78,10 @@ function user_login_db($user_id,$user_password)
 }
 
 
-function user_mobile_db($mobile)
+function check_existence_of_user_mobile_db($mobile)
 {
-    
+     $check=$GLOBALS['r']->hexists('contact:user',$mobile);
+    return $check;
     
     
 }
