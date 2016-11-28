@@ -1,8 +1,6 @@
 <?php
 include_once '../config/config.php';
-$GLOBALS['r']=new Redis;
-//$r=new Redis();
-$GLOBALS['r']->connect($GLOBALS['ip']);
+
 function check_existence_of_user_id($user_id)
 {
     
@@ -14,7 +12,7 @@ function check_existence_of_user_password($user_id,$user_password)
 {
  
      $check_password=$GLOBALS['r']->hget('user:'.$user_id,'password_hash');
-    if(password_verify($user_password,$check_hash)) 
+    if(password_verify($user_password,$check_password)) 
     {
         return true;
     }
@@ -23,8 +21,12 @@ function check_existence_of_user_password($user_id,$user_password)
 
 function state_user_db($user_id)
 {
-$result=$r->zrank('state:user',$user_id);
-return result;    
+$result=$GLOBALS['r']->zscore('state:user',$user_id);
+//echo $user_id.'user_id';
+    //echo "from db_func==".$result;
+    return $result;
+    
+    
 }
 
 function check_existence_of_user_email_db($email)
