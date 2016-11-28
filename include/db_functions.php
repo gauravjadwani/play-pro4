@@ -87,5 +87,22 @@ function check_existence_of_user_mobile_db($mobile)
     
     
 }
+function user_notifications_db($user_id)
+{
+    
+    
+}
 
+function create_project_db($)
+{
+    
+}
+
+function create_group($name,$created_on,$closed_on)
+    {
+        $GLOBALS['r']->hsetnx('parent','group_id','1');
+         $group_id= $GLOBALS['r']->hget('parent','group_id');
+$GLOBALS['r']->hMset('group:'.$group_id, array('name' => $name_group,'created_on'=>$date,'closed_on'=>'live'));
+$GLOBALS['r']->hincrby('parent','group_id',1);
+    }
 ?>
