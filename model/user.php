@@ -36,9 +36,24 @@ function check_existence_of_user_mobile($mobile)
 function state_user($user_id)
 {
     
-        $check=state_user_db($user_id);
+        $check=check_state_user_db($user_id);
         return $check;
         
 }
+
+
+function create_group($name,$created_on,$closed_on)
+{
+    
+$check=create_group_db($name,$created_on,$closed_on);
+    return $check;
+
+}
+function set_permissions_for_group($group_id,$list_of_email,$token)
+{
+    $check=set_permissions_for_group_db($group_id,$list_of_email,$token);
+    return $check;
+}
+
 
 ?>

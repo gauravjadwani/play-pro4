@@ -7,7 +7,13 @@ $user_password=$_REQUEST['passwd'];
 $result=state_user($user_id);
 
 
-if($result===false)
+if($result==0)
+{
+	echo "user is does not exist==".$result; 
+    //var_dump($result);
+    exit();
+}
+elseif($result===false)
 {
 	echo "user is barred by admin==".$result; 
     exit();
@@ -19,7 +25,7 @@ if($result===true)
     
                 session_start();
             //$_SESSION["email"]=$email;
-            $name=$GLOBALS['r']->hget('user:'.$user_id,'name');
+            $name=$GLOBALS['r']->hget('user','name:'.$user_id);
     
             echo $name;
             $_SESSION["name"]=$name;

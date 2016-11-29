@@ -10,7 +10,7 @@ $mobile=$_REQUEST['mobile'];
 $current_time=time();
 
 
-$result=check_existence_of_user_email_db($email);
+$result=check_existence_of_user_email($email);
 if($result===true)
 {
     echo "email exits";
