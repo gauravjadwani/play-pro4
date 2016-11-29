@@ -56,4 +56,13 @@ function set_permissions_for_group($group_id,$list_of_email,$token)
 }
 
 
+function get_notifications($user_id)
+{
+    
+    $values=user_get_notifications_db($user_id);
+    
+    return $values;
+    
+}
+
 ?>

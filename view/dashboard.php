@@ -12,7 +12,7 @@ include_once '../common_utilities/header.php';
             <hr>
                 <?php
                  
-              include 'notifications.php';
+              include '../controller/notifications.php';
                 
                 ?>
                 </ul>

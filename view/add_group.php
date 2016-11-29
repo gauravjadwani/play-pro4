@@ -9,7 +9,7 @@ include_once '../common_utilities/header.php';
             <div class="col-sm-7">
                     <h1>GROUP DETAILS</h1>
                     <hr>
-                    <div class="form-group">
+                    <div class="<form-group">
                         
                         <input class="form-control input-lg" name="name_of_group" type="text" placeholder="name of the group">
                         &nbsp
