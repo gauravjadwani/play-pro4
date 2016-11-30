@@ -2,7 +2,7 @@
 
 include_once '../model/user.php';
 
-$values=get_notifications($user_id);
+$values=user_get_notifications($user_id);
 
 $len=sizeof($values);
 

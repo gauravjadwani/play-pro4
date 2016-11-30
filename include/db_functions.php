@@ -162,11 +162,11 @@ function user_get_notifications_db($user_id)
     }
     else
     {
-        $j=json_decode($list_noti,true);
+        $notifications_array=json_decode($list_noti,true);
         //$p=array($value,$current_time);
          //array_push($j,$p);
         
-        return $j;     
+        return $notifications_array;     
     }
 
 
@@ -175,17 +175,94 @@ function user_get_notifications_db($user_id)
 
 
 ///////////////////////////////////////////////////////////
-function create_project_db()
+function create_project_db($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on)
 {
     
+    $GLOBALS['r']->hsetnx('parent','group_id','1');
+    $project_id=$GLOBALS['r']->hget('parent','project_id');
+$GLOBALS['r']->hMset('project',array('name:'.$project_id=>$name,'created_on:'.$project_id=>$created_on,'desc:'.$project_id=>$desc,'deadline:'.$project_id=>$deadline,'associated_group:'.$project_id=>$closed_on,'list_of_tasks:'.$project_id=>$list_of_tasks,'closed_on:'.$project_id=>$closed_on)); 
+    
+    
+     $GLOBALS['r']->hincrby('parent','group_id',1);
+    return $project_id;
 }
 //////////////////////////////////////////////////////////////
+
+
+function add_project_to_user_list_of_projects_db($user_id,$project_id)
+{
+    $list=$GLOBALS['r']->hget('user','list_of_projects:'.$user_id);
+    if($list!='null')
+    {
+      
+        
+        $list_jsondeocde=json_decode($list,true);
+        
+        
+        $list=array($project_id);
+        array_push($list_jsondeocde,$list);
+        
+          
+        
+        $list_jsonencode=json_encode($list_jsondeocde);
+        
+        $GLOBALS['r']->hset('user','list_of_projects:'.$user_id,$list_jsonencode);
+        
+        
+    }
+    else
+    {
+           $d=array();
+        $p=array($project_id);
+        array_push($d,$p);
+        $j=json_encode($d);
+        
+        
+    $GLOBALS['r']->hset('user','list_of_projects:'.$user_id,$j);
+        
+    }
+    
+    
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+function get_project_detais_db($project_id)
+{
+    $project_details=array();
+   
+    $project_name=$GLOBALS['r']->hget('project','name:'.$project_id);
+     array_push($project_details,$project_name);
+    $created_on=$GLOBALS['r']->hget('project','created_on:'.$project_id);
+     array_push($project_details,$created_on);
+    $desc=$GLOBALS['r']->hget('project','desc:'.$project_id);
+     array_push($project_details,$desc);
+    $deadline=$GLOBALS['r']->hget('project','deadline:'.$project_id);
+     array_push($project_details,$deadline);
+    $associated_group=$GLOBALS['r']->hget('project','associated_group:'.$project_id);
+     array_push($project_details,$associated_group);
+    $list_of_tasks=$GLOBALS['r']->hget('project','list_of_tasks:'.$project_id);
+     array_push($project_details,$list_of_tasks);
+     $closed_on=$GLOBALS['r']->hget('project','closed_on:'.$project_id);
+     array_push($project_details,$closed_on);
+    
+    return $project_details;
+    
+    
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////
 
 function create_group_db($name,$created_on,$closed_on)
     {
         
             $GLOBALS['r']->hsetnx('parent','group_id','1');
-             $group_id= $GLOBALS['r']->hget('parent','group_id');
+             $group_id=$GLOBALS['r']->hget('parent','group_id');
     $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on)); 
     $GLOBALS['r']->hincrby('parent','group_id',1);
        return $group_id;
@@ -230,63 +307,12 @@ function add_group_to_user_list_of_groups_db($user_id,$group_id)
 ///////////////////////////////////////////////////////////////////////////
 
 
-function add_project_to_list_of_projects_db($user_id,$project_id)
-{
-    $list=$GLOBALS['r']->hget('user','list_of_projects:'.$user_id);
-    if($list!='null')
-    {
-        $list_jsondeocde=json_decode($list,true);
-            array_push($list_jsondeocde,$project_id);
-        
-        $list_jsonencode=json_encode($list_jsondeocde);
-        
-        $GLOBALS['r']->hset('user','list_of_projects:'.$user_id,$list_jsonencode);
-        
-        
-    }
-    else
-    {
-        $list=array($project_id);
-        $list_jsonencode=json_encode($list);
-    $GLOBALS['r']->hset('user','list_of_projects:'.$user_id,$list_jsonencode);
-        
-    }
-    }
-/////////////////////////////////////////////////////////////////////
-
-function add_task_to_list_of_tasks_db($user_id,$task_id)
-{
-    $list=$GLOBALS['r']->hget('user','list_of_tasks:'.$user_id);
-    if($list!='null')
-    {
-        $list_jsondeocde=json_decode($list,true);
-            array_push($list_jsondeocde,$task_id);
-        
-        $list_jsonencode=json_encode($list_jsondeocde);
-        
-        $GLOBALS['r']->hset('user','list_of_tasks:'.$user_id,$list_jsonencode);
-        
-        
-    }
-    else
-    {
-        $list=array($task_id);
-        $list_jsonencode=json_encode($list);
-    $GLOBALS['r']->hset('user','list_of_tasks:'.$user_id,$list_jsonencode);
-        
-    }
-    
-    
-    
-    
-}
-///////////////////////////////////////////////////////////////
 
 
 //2 is for modifier,3 is for read-only,0 is for the owner
 function set_permissions_for_group_db($group_id,$list_of_email,$token)
 {
-    $group_name=$GLOBALS['r']->hget('group','name:'.$group_id);
+    $group_name=$GLOBALS['r']->hget('group','name:'.$group_id   );
     $split_email= split(",",$list_of_email);
     
     for($i=0;$i<sizeof($split_email);$i++)
@@ -301,7 +327,7 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
     $current_time=time();
     if($token==0)
     {
-    $value='you created the group '.$group_name.' on '.$current_time;
+    $value='you created the group '.$group_name.' ';
         }
     elseif($token==2)
     {

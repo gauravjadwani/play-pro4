@@ -5,7 +5,7 @@ include_once '../common_utilities/header.php';
     <div class="row">
         <div class="col-md-3">
         </div>
-         <form action="../controllers/add_project.php" method="POST">
+         <form action="../controller/add_project.php" method="POST">
         <div class="col-md-7">
             <div class='row'>
                  <h1>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspNAME OF THE PROJECT</h1>
@@ -35,7 +35,7 @@ include_once '../common_utilities/header.php';
                
                
     
-    <input class="form-control input-lg" name="name_of_the_project" type="text" placeholder="name of the group">
+    <input class="form-control input-lg" name="associated_group" type="text" placeholder="name of the group">
                 </div>
                
         </div>  </div>
@@ -61,12 +61,13 @@ include_once '../common_utilities/header.php';
                 <div class="col-md-9">
                     
            
-           <input type="date" name="date" class="form-control">&nbsp&nbsp&nbsp
+           <input type="date" name="deadline" class="form-control">&nbsp&nbsp&nbsp
          
             </div>
                
             
                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
            </div>
                 </div>
       

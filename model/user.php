@@ -43,6 +43,25 @@ function state_user($user_id)
 }
 
 
+function create_project($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on)
+{
+    $project_id=create_project_db($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on);
+    return $project_id;
+}
+
+function  add_project_to_user_list_of_projects($user_id,$project_id)
+{
+    add_project_to_user_list_of_projects_db($user_id,$project_id);
+    
+}
+
+function get_project_details($project_id)
+{
+    
+    $project_details=get_project_detais_db($project_id);
+    return $project_details;
+}
+
 function create_group($name,$created_on,$closed_on)
 {
     
@@ -67,12 +86,18 @@ function set_permissions_for_group($group_id,$list_of_email,$token)
 }
 
 
-function get_notifications($user_id)
+function user_get_notifications($user_id)
 {
     
     $values=user_get_notifications_db($user_id);
     
     return $values;
+    
+}
+function user_set_notifications($user_id,$current_time,$value)
+{
+    
+    user_set_notifications_db($user_id,$current_time,$value);
     
 }
 
