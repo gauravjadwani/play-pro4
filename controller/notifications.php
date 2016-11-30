@@ -14,7 +14,7 @@ for($i=0;$i<$len;$i++)
     $date1=gmdate("Y-m-d\TH:i:s\Z", $date);
 	
     
-    echo $data.' date is: '.$date1.'</br>';
+     echo '<div class="alert alert-danger alert-dismissable"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'.$data.' date is: '.$date1.'</div>&nbsp';
     //echo gmdate("Y-m-d\TH:i:s\Z", $date);
     //echo  date('U = Y-m-d H:i:s', $dates);
 	
