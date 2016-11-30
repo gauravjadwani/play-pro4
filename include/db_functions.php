@@ -93,7 +93,7 @@ function user_sign_up_db($email,$name,$mobile,$password,$current_time)
     
     $GLOBALS['r']->hincrby('parent','user_id',1);
     
-     user_set_notifications_db($user_id,$current_time,'hello dave!');
+     user_set_notifications_db($user_id,$current_time,'hello '.$name.'!'.' welcome to todo list!');
     
     
     return $user_id;
