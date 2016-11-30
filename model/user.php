@@ -100,5 +100,11 @@ function user_set_notifications($user_id,$current_time,$value)
     user_set_notifications_db($user_id,$current_time,$value);
     
 }
+function get_user_groups($user_id)
+{
+    
+    $list_groups=get_user_groups_db($user_id);
+    return $list_groups;
+}
 
 ?>

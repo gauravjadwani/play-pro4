@@ -1,5 +1,6 @@
 <?php 
 include_once '../common_utilities/header.php';
+include_once '../controller/list_of_groups.php';
 ?>
 <div class="container">
     <div class="row">
@@ -34,9 +35,25 @@ include_once '../common_utilities/header.php';
            <div class="col-md-9">
                
                
-    
-    <input class="form-control input-lg" name="associated_group" type="text" placeholder="name of the group">
-                </div>
+               <select class="form-control" name="group_id">
+      
+              <option  selected value='default'> -- select a group -- </option>
+              <?php
+                   
+                   foreach($list_groups as $groups)
+                   {
+                       print_r($list_groups);
+                       print_r($groups);
+                   ?>
+                   <option  selected value='<?php echo $groups;?>'><?php echo $groups;?></option>
+                   
+                   
+                   <?php }
+                   
+                   ?>
+               </select>
+                
+                  </div>
                
         </div>  </div>
            
@@ -67,7 +84,12 @@ include_once '../common_utilities/header.php';
                
             
                </div>
+               <div class="col-md-3">
+                   
+               </div>
+               <div class="col-md-9">
                 <button type="submit" class="btn btn-default">Submit</button>
+                </div>
            </div>
                 </div>
       

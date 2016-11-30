@@ -212,10 +212,10 @@ function add_project_to_user_list_of_projects_db($user_id,$project_id)
     }
     else
     {
-           $d=array();
+           //$d=array();
         $p=array($project_id);
-        array_push($d,$p);
-        $j=json_encode($d);
+        //array_push($d,$p);
+        $j=json_encode($p);
         
         
     $GLOBALS['r']->hset('user','list_of_projects:'.$user_id,$j);
@@ -292,10 +292,10 @@ function add_group_to_user_list_of_groups_db($user_id,$group_id)
     }
     else
     {
-           $d=array();
+           //$d=array();
         $p=array($group_id);
-        array_push($d,$p);
-        $j=json_encode($d);
+        //array_push($d,$p);
+        $j=json_encode($p);
         
         
         //$list=array($group_id);
@@ -348,8 +348,19 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
         continue;
     }
 }
-    return 'set_permissions/db_functions';
+    return 'set_permissions_db_functions';
 }
 ///////////////////////////////////////////////////////////////
-
+ function get_user_groups_db($user_id)
+ {
+     $list_groups_json=$GLOBALS['r']->hget('user','list_of_groups:'.$user_id);
+     if($list_groups_json!='null')
+     {
+     $list_groups=json_decode($list_groups_json,true);
+     return $list_groups;
+     }
+     else
+         return 'empty group';
+     
+ }
 ?>
