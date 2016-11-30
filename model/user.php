@@ -21,8 +21,9 @@ return $check;
 
 function check_existence_of_user_email($email)
 {
-    $check=check_existence_of_user_email_db($email);
-        return $check;
+    $user_id=check_existence_of_user_email_db($email);
+        return $user_id;
+        return $user_id;
         
 }
 
@@ -49,6 +50,16 @@ $check=create_group_db($name,$created_on,$closed_on);
     return $check;
 
 }
+
+function add_group_to_user_list_of_groups($user_id,$group_id)
+{
+    
+    
+    add_group_to_user_list_of_groups_db($user_id,$group_id);
+}
+
+
+
 function set_permissions_for_group($group_id,$list_of_email,$token)
 {
     $check=set_permissions_for_group_db($group_id,$list_of_email,$token);

@@ -14,7 +14,7 @@ for($i=0;$i<$len;$i++)
     $date1=gmdate("Y-m-d\TH:i:s\Z", $date);
 	
     
-    echo $data.' date is: '.$date1;
+    echo $data.' date is: '.$date1.'</br>';
     //echo gmdate("Y-m-d\TH:i:s\Z", $date);
     //echo  date('U = Y-m-d H:i:s', $dates);
 	

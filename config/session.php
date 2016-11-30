@@ -1,8 +1,9 @@
 <?php
-//include 'connection.php';
+include '../config/config.php';
 session_start();
-    //$email=$_SESSION["email"];
+    
     $name=$_SESSION["name"];
     $user_id=$_SESSION["user_id"];
-    //$name=$r->hget($email,'name');
+   $_SESSION["email"]=$GLOBALS['r']->hget('user','email:'.$user_id);
+    $email=$_SESSION["email"];
 ?>

@@ -31,8 +31,12 @@ function check_existence_of_user_password($user_id,$user_password)
 
 function check_existence_of_user_email_db($email)
 {
-      $check_email=$GLOBALS['r']->hexists('email:user',$email);
-    return $check_email;
+      $user_id=$GLOBALS['r']->hget('email:user',$email);
+    //return $check_email;
+    if($user_id===false)
+        return 'false';
+        else
+            return $user_id;
     
 }
 /////////////////////////////////////////////////////////////////////
@@ -138,8 +142,9 @@ function user_set_notifications_db($user_id,$current_time,$value)
         $j=json_decode($check_noti,true);
         $p=array($value,$current_time);
          array_push($j,$p);
+        $q=json_encode($j);
         
-         $GLOBALS['r']->hset("user",'list_of_notifications:'.$user_id,$j);
+         $GLOBALS['r']->hset("user",'list_of_notifications:'.$user_id,$q);
     }
 
 
@@ -178,22 +183,29 @@ function create_project_db()
 
 function create_group_db($name,$created_on,$closed_on)
     {
-        $date=time();
+        
             $GLOBALS['r']->hsetnx('parent','group_id','1');
              $group_id= $GLOBALS['r']->hget('parent','group_id');
-    $GLOBALS['r']->hMset('group',array('name:'.$group_id => $name_group,'created_on:'.$group_id=>$date,'closed_on:'.$group_id=>'live'));
+    $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on)); 
     $GLOBALS['r']->hincrby('parent','group_id',1);
        return $group_id;
         }
 /////////////////////////////////////////////////////////////////////////////
 
-function add_group_to_list_of_groups_db($user_id,$group_id)
+function add_group_to_user_list_of_groups_db($user_id,$group_id)
 {
     $list=$GLOBALS['r']->hget('user','list_of_groups:'.$user_id);
     if($list!='null')
     {
+      
+        
         $list_jsondeocde=json_decode($list,true);
-            array_push($list_jsondeocde,$group_id);
+        
+         //$d=array();
+        $list=array($group_id);
+        array_push($list_jsondeocde,$list);
+        
+            //array_push($list_jsondeocde,$group_id);
         
         $list_jsonencode=json_encode($list_jsondeocde);
         
@@ -203,9 +215,15 @@ function add_group_to_list_of_groups_db($user_id,$group_id)
     }
     else
     {
-        $list=array($group_id);
-        $list_jsonencode=json_encode($list);
-    $GLOBALS['r']->hset('user','list_of_groups:'.$user_id,$list_jsonencode);
+           $d=array();
+        $p=array($group_id);
+        array_push($d,$p);
+        $j=json_encode($d);
+        
+        
+        //$list=array($group_id);
+        //$list_jsonencode=json_encode($d);
+    $GLOBALS['r']->hset('user','list_of_groups:'.$user_id,$j);
         
     }
     }
@@ -268,16 +286,19 @@ function add_task_to_list_of_tasks_db($user_id,$task_id)
 //2 is for modifier,3 is for read-only,0 is for the owner
 function set_permissions_for_group_db($group_id,$list_of_email,$token)
 {
-    $group_name=$GLOBALS['r']->hget('group:'.$group_id,'name');
+    $group_name=$GLOBALS['r']->hget('group','name:'.$group_id);
     $split_email= split(",",$list_of_email);
     
     for($i=0;$i<sizeof($split_email);$i++)
 {
     
-    $GLOBALS['r']->zadd("group_permissions:".$group_id,$token,split_email[$i]);
+    $GLOBALS['r']->zadd("group_permissions:".$group_id,$token,$split_email[$i]);
    
-        $user_id=$GLOBALS['r']->hget('email:user',split_email($i));
-        $current_time=time();
+        //$user_id=$GLOBALS['r']->hget('email:user',split_email($i));
+    $user_id=check_existence_of_user_email_db($split_email[$i]);    
+    if($user_id!='false')
+    {
+    $current_time=time();
     if($token==0)
     {
     $value='you created the group '.$group_name.' on '.$current_time;
@@ -292,9 +313,16 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
      $value='you were added in the group '.$group_name.' on '.$current_time.' as modifier';
     }
         
-    user_notifications_db($user_id,$current_time,$value);
+           
+            user_set_notifications_db($user_id,$current_time,$value);
+         add_group_to_user_list_of_groups_db($user_id,$group_id);
 }
-        
+    else
+    {
+        continue;
+    }
+}
+    return 'set_permissions/db_functions';
 }
 ///////////////////////////////////////////////////////////////
 

@@ -11,7 +11,7 @@ $current_time=time();
 
 
 $result=check_existence_of_user_email($email);
-if($result===true)
+if($result>0)
 {
     echo "email exits";
 //$result=
