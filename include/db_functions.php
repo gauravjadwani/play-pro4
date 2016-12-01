@@ -226,8 +226,8 @@ function add_project_to_user_list_of_projects_db($user_id,$project_id)
         $list_jsondeocde=json_decode($list,true);
         
         
-        $list=array($project_id);
-        array_push($list_jsondeocde,$list);
+        //$list=array();
+        array_push($list_jsondeocde,$project_id);
         
           
         
@@ -280,9 +280,6 @@ function get_project_detais_db($project_id)
     
 }
 
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function create_group_db($name,$created_on,$closed_on,$created_by)
@@ -293,7 +290,7 @@ function create_group_db($name,$created_on,$closed_on,$created_by)
     $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on,'created_by:'.$group_id=>$created_by)); 
     $GLOBALS['r']->hincrby('parent','group_id',1);
         $email_user_id=$GLOBALS['r']->hget('user','email:'.$created_by);
-        set_permissions_for_group_db($group_id,$email_user_id,0);
+        set_permissions_for_group_db($group_id,$email_user_id,1);
        return $group_id;
         }
 /////////////////////////////////////////////////////////////////////////////
@@ -308,10 +305,10 @@ function add_group_to_user_list_of_groups_db($user_id,$group_id)
         $list_jsondeocde=json_decode($list,true);
         
          //$d=array();
-        $list=array($group_id);
-        array_push($list_jsondeocde,$list);
+        //$list=array($group_id);
+        //array_merge(array1)($list_jsondeocde,$list);
         
-            //array_push($list_jsondeocde,$group_id);
+            array_push($list_jsondeocde,$group_id);
         
         $list_jsonencode=json_encode($list_jsondeocde);
         
@@ -338,7 +335,7 @@ function add_group_to_user_list_of_groups_db($user_id,$group_id)
 
 
 
-//2 is for modifier,3 is for read-only,0 is for the owner
+//2 is for modifier,3 is for read-only,1 is for the owner
 function set_permissions_for_group_db($group_id,$list_of_email,$token)
 {
     $group_name=$GLOBALS['r']->hget('group','name:'.$group_id);
@@ -382,11 +379,21 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
 }
 ///////////////////////////////////////////////////////////////
 
-function check_user_permission_for_group($group_id,$user_id)
+function check_user_permission_for_group_db($group_id,$user_id)
 
 {
+   $p=$GLOBALS['r']->zscore('group_permissions:'.$group_id,$user_id);
+    //print_r($p);
+//exit();
     
-    
+        if($p==1)
+            return 'o';
+       elseif($p==2)
+            return 'm';
+       elseif($p==3)
+            return 'r';
+        else 
+            return 'n';
     
 }
 

@@ -1,6 +1,6 @@
 <?php 
 include_once '../common_utilities/header.php';
-include_once '../controller/list_of_groups.php';
+include_once '../controller/list_group_project.php';
 ?>
 <div class="container">
     <div class="row">
@@ -40,10 +40,10 @@ include_once '../controller/list_of_groups.php';
               <option  selected value='default'> -- select a group -- </option>
               <?php
                    
-                   foreach($list_groups as $groups)
+                   foreach($list_group_permission as $groups)
                    {
-                       print_r($list_groups);
-                       print_r($groups);
+                       //print_r($list_groups);
+                       //print_r($groups);
                    ?>
                    <option value='<?php echo $groups;?>'><?php echo $groups;?></option>
                    
