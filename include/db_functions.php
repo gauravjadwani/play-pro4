@@ -150,12 +150,12 @@ function user_set_notifications_db($user_id,$current_time,$value)
 
 }
 
-///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 function user_get_notifications_db($user_id)
 {
     
 //$GLOBALS['r']->zadd("notifications:".$user_id,$current_time,$value);
-    $list_noti= $GLOBALS['r']->hget("user",'list_of_notifications:'.$user_id);
+    $list_noti=$GLOBALS['r']->hget("user",'list_of_notifications:'.$user_id);
     if($list_noti=='null')
     {
         return false;
@@ -174,19 +174,46 @@ function user_get_notifications_db($user_id)
 
 
 
-///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+
+function create_task_db($name,$assinged_for,$created_on,$association,$initiator,$priority,$closed_on)
+{
+    $GLOBALS['r']->hsetnx('parent','task_id','1');
+    $project_id=$GLOBALS['r']->hget('parent','task_id');
+$GLOBALS['r']->hMset('task',array('name:'.$task_id=>$name,'assinged_for:'.$task_id=>$assinged_for,'created_on:'.$task_id=>$created_on,'association:'.$task_id=>$association,'initiator:'.$task_id=>$initiator,'priority:'.$task_id=>$priority,'closed_on:'.$task_id=>$closed_on)); 
+    
+    
+     $GLOBALS['r']->hincrby('parent','task_id',1);
+    return $project_id;
+    
+    
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+function add_task_to_project($task_id,$project_id,$user_id)
+{
+    
+    
+    
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
 function create_project_db($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on)
 {
     
-    $GLOBALS['r']->hsetnx('parent','group_id','1');
+    $GLOBALS['r']->hsetnx('parent','project_id','1');
     $project_id=$GLOBALS['r']->hget('parent','project_id');
-$GLOBALS['r']->hMset('project',array('name:'.$project_id=>$name,'created_on:'.$project_id=>$created_on,'desc:'.$project_id=>$desc,'deadline:'.$project_id=>$deadline,'associated_group:'.$project_id=>$closed_on,'list_of_tasks:'.$project_id=>$list_of_tasks,'closed_on:'.$project_id=>$closed_on)); 
+$GLOBALS['r']->hMset('project',array('name:'.$project_id=>$name,'created_on:'.$project_id=>$created_on,'desc:'.$project_id=>$desc,'deadline:'.$project_id=>$deadline,'associated_group:'.$project_id=>$associated_group,'list_of_tasks:'.$project_id=>$list_of_tasks,'closed_on:'.$project_id=>$closed_on)); 
     
     
-     $GLOBALS['r']->hincrby('parent','group_id',1);
+     $GLOBALS['r']->hincrby('parent','project_id',1);
     return $project_id;
 }
-//////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
 
 
 function add_project_to_user_list_of_projects_db($user_id,$project_id)
@@ -258,13 +285,15 @@ function get_project_detais_db($project_id)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-function create_group_db($name,$created_on,$closed_on)
+function create_group_db($name,$created_on,$closed_on,$created_by)
     {
         
             $GLOBALS['r']->hsetnx('parent','group_id','1');
              $group_id=$GLOBALS['r']->hget('parent','group_id');
-    $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on)); 
+    $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on,'created_by:'.$group_id=>$created_by)); 
     $GLOBALS['r']->hincrby('parent','group_id',1);
+        $email_user_id=$GLOBALS['r']->hget('user','email:'.$created_by);
+        set_permissions_for_group_db($group_id,$email_user_id,0);
        return $group_id;
         }
 /////////////////////////////////////////////////////////////////////////////
@@ -312,13 +341,14 @@ function add_group_to_user_list_of_groups_db($user_id,$group_id)
 //2 is for modifier,3 is for read-only,0 is for the owner
 function set_permissions_for_group_db($group_id,$list_of_email,$token)
 {
-    $group_name=$GLOBALS['r']->hget('group','name:'.$group_id   );
-    $split_email= split(",",$list_of_email);
+    $group_name=$GLOBALS['r']->hget('group','name:'.$group_id);
+    $split_email=split(",",$list_of_email);
     
     for($i=0;$i<sizeof($split_email);$i++)
 {
+    $user_id_email=$GLOBALS['r']->hget('email:user',$split_email[$i]);
     
-    $GLOBALS['r']->zadd("group_permissions:".$group_id,$token,$split_email[$i]);
+    $GLOBALS['r']->zadd("group_permissions:".$group_id,$token,$user_id_email);
    
         //$user_id=$GLOBALS['r']->hget('email:user',split_email($i));
     $user_id=check_existence_of_user_email_db($split_email[$i]);    
@@ -336,7 +366,7 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
     }
     elseif($token==3)
     {
-     $value='you were added in the group '.$group_name.' on '.$current_time.' as modifier';
+     $value='you were added in the group '.$group_name.' on '.$current_time.' as readonly';
     }
         
            
@@ -351,6 +381,16 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
     return 'set_permissions_db_functions';
 }
 ///////////////////////////////////////////////////////////////
+
+function check_user_permission_for_group($group_id,$user_id)
+
+{
+    
+    
+    
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
  function get_user_groups_db($user_id)
  {
      $list_groups_json=$GLOBALS['r']->hget('user','list_of_groups:'.$user_id);
@@ -363,4 +403,5 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
          return 'empty group';
      
  }
+
 ?>

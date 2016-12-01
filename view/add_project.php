@@ -45,7 +45,7 @@ include_once '../controller/list_of_groups.php';
                        print_r($list_groups);
                        print_r($groups);
                    ?>
-                   <option  selected value='<?php echo $groups;?>'><?php echo $groups;?></option>
+                   <option value='<?php echo $groups;?>'><?php echo $groups;?></option>
                    
                    
                    <?php }

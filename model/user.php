@@ -62,10 +62,10 @@ function get_project_details($project_id)
     return $project_details;
 }
 
-function create_group($name,$created_on,$closed_on)
+function create_group($name,$created_on,$closed_on,$created_by)
 {
     
-$check=create_group_db($name,$created_on,$closed_on);
+$check=create_group_db($name,$created_on,$closed_on,$created_by);
     return $check;
 
 }

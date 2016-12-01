@@ -5,6 +5,12 @@ include_once '../config/session.php';
 
 $project_name=$_POST['name_of_the_project'];
 $associated_group=$_POST['associated_group'];
+if($associated_group=='default')
+{
+   header('Location: ../view/add_project.php');
+    exit();
+    
+}
 $desc=$_POST['desc'];
 $deadline=$name=$_POST['deadline'];
 $list_of_tasks='null';
@@ -28,6 +34,6 @@ add_project_to_user_list_of_projects($user_id,$project_id);
 
 
 
-
+header('Location: ../view/add_project.php');
 
 ?>
