@@ -290,6 +290,7 @@ function create_group_db($name,$created_on,$closed_on,$created_by)
     $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on,'created_by:'.$group_id=>$created_by)); 
     $GLOBALS['r']->hincrby('parent','group_id',1);
         $email_user_id=$GLOBALS['r']->hget('user','email:'.$created_by);
+        
         set_permissions_for_group_db($group_id,$email_user_id,1);
        return $group_id;
         }

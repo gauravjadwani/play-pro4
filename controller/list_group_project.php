@@ -8,7 +8,7 @@ $list_group_permission=array();
 foreach($list_groups as $key)
 {
        
-    print_r($list_groups);    
+    //print_r($list_groups);    
 //exit();
 
     $permission=check_user_permissions($key,$user_id);
