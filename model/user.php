@@ -43,9 +43,10 @@ function state_user($user_id)
 }
 
 
-function create_project($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on)
+function create_project($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on,$created_by)
 {
-    $project_id=create_project_db($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on);
+  
+    $project_id=create_project_db($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on,$created_by);
     return $project_id;
 }
 
@@ -61,6 +62,13 @@ function get_project_details($project_id)
     $project_details=get_project_detais_db($project_id);
     return $project_details;
 }
+
+function create_task($name,$assinged_for,$created_on,$association,$initiator,$priority,$closed_on)
+{
+$task_id=create_task_db($name,$assinged_for,$created_on,$association,$initiator,$priority,$closed_on);
+}
+
+
 
 function create_group($name,$created_on,$closed_on,$created_by)
 {

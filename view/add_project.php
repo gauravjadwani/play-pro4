@@ -35,7 +35,7 @@ include_once '../controller/list_group_project.php';
            <div class="col-md-9">
                
                
-               <select class="form-control" name="group_id">
+               <select class="form-control" name="associated_group">
       
               <option  selected value='default'> -- select a group -- </option>
               <?php

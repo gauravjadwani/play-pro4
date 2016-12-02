@@ -25,12 +25,15 @@ $closed_on='live';
 
 
 
-$project_id=create_project($project_name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on);
+$project_id=create_project($project_name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on,$user_id);
+
+
 $project_details=get_project_details($project_id);
 
-user_set_notifications($user_id,$current_time,'you created the project '.$project_details[0].' on    '.$created_on);
+//exit();
 
 add_project_to_user_list_of_projects($user_id,$project_id);
+//var_dump($project_details);
 
 
 

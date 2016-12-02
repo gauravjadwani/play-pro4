@@ -5,6 +5,9 @@ $list_groups=get_user_groups($user_id);
 //print_r($list_groups);
 //exit();
 $list_group_permission=array();
+//print_r($list_groups);
+//exit();
+if($list_groups!='empty group')
 foreach($list_groups as $key)
 {
        
