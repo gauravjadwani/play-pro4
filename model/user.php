@@ -5,7 +5,7 @@ include '../include/db_functions.php';
 
 
 //$check_sign_up=user_signup($email,$name,$mobile,$hashed_password,$current_time);
-
+//////////////user/////////////////////////////////////////////////////////
 function user_login($user_id,$user_password)
 {
 $check_login=user_login_db($user_id,$user_password);
@@ -41,11 +41,33 @@ function state_user($user_id)
         return $check;
         
 }
+function  get_user_projects($user_id)
+{
 
+$check_project=get_user_projects_db($user_id);
+return $check_project;
+
+}
+function user_get_notifications($user_id)
+{
+    
+    $values=user_get_notifications_db($user_id);
+    
+    return $values;
+    
+}
+function user_set_notifications($user_id,$current_time,$value)
+{
+    
+    user_set_notifications_db($user_id,$current_time,$value);
+    
+}
+
+///////////////////////////////////project///////////////////////////////////////////////
 
 function create_project($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on,$created_by)
 {
-  
+
     $project_id=create_project_db($name,$created_on,$desc,$deadline,$associated_group,$list_of_tasks,$closed_on,$created_by);
     return $project_id;
 }
@@ -62,12 +84,38 @@ function get_project_details($project_id)
     $project_details=get_project_detais_db($project_id);
     return $project_details;
 }
-
+//////////////////////////////////////task////////////////////////////////////
 function create_task($name,$assinged_for,$created_on,$association,$initiator,$priority,$closed_on)
 {
 $task_id=create_task_db($name,$assinged_for,$created_on,$association,$initiator,$priority,$closed_on);
+return $task_id;
+
 }
 
+function add_task_to_self($task_id,$user_id)
+{
+$check_add_task=add_task_to_self_db($task_id,$user_id);
+return $check_add_task;
+
+}
+
+function add_task_to_project($task_id,$user_id,$project_id)
+{
+$check_task=add_task_to_project_db($task_id,$user_id,$project_id);
+return $check_task;
+}
+function add_task_to_project_list_of_tasks($project_id,$task_id)
+{
+    add_task_to_project_list_of_tasks_db($project_id,$task_id);
+
+}
+
+
+
+
+
+
+///////////////////////////////group///////////////////////////////////
 
 
 function create_group($name,$created_on,$closed_on,$created_by)
@@ -105,25 +153,16 @@ function check_user_permissions($group_id,$user_id)
 }
 
 
-function user_get_notifications($user_id)
-{
-    
-    $values=user_get_notifications_db($user_id);
-    
-    return $values;
-    
-}
-function user_set_notifications($user_id,$current_time,$value)
-{
-    
-    user_set_notifications_db($user_id,$current_time,$value);
-    
-}
 function get_user_groups($user_id)
 {
     
     $list_groups=get_user_groups_db($user_id);
     return $list_groups;
 }
+function get_group_details($group_id)
+{
+$group_details=get_group_details_db($group_id);
+return $group_details;
 
+}
 ?>

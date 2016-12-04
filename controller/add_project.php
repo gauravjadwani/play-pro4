@@ -32,7 +32,7 @@ $project_details=get_project_details($project_id);
 
 //exit();
 
-add_project_to_user_list_of_projects($user_id,$project_id);
+//add_project_to_user_list_of_projects($user_id,$project_id);
 //var_dump($project_details);
 
 

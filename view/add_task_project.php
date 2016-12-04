@@ -1,7 +1,8 @@
 <!DOCTYPE html>
     <?php
+    
     include '../common_utilities/header.php';
-    //include_once '../controllers/init_session.php';
+    include '../controller/list_user_projects.php';
 
 
     ?>
@@ -11,7 +12,7 @@
 
         
         
-    <form action="../controller/addtask_toproject.php" method="POST">
+    <form action="../controller/add_task_to_project.php" method="POST">
         
 <div class="container">
     <div class="row">
@@ -44,15 +45,27 @@
                 <select class="form-control" name="project_id">
       
       
-      
+      <?php
+if($list_user_projects!='empty projects')
+foreach ($list_user_projects as $pro) 
+{
+
+
+
+
+
+      ?>
  
        
-      <option value="">ye
+      <option value="<?php echo $pro; ?>"><?php echo $pro; ?>
         
       </option>
   
       
-      
+      <?php
+
+}
+      ?>
       
       
       </select>
@@ -68,10 +81,10 @@
             <div class="row">
             
             <div class = "form-group">
-      <label for = "email" class = "col-sm-2 control-label" style="font-size: 20px">Task</label>
+      <label for = "task" class = "col-sm-2 control-label" style="font-size: 20px">Task</label>
 		
       <div class = "col-md-7">
-       <input type = "text" class = "form-control" name = "task" placeholder ="Enter Task">
+       <input type = "text" class = "form-control" name ="task" placeholder ="Enter Task">
       </div>
       <div class="col-md-3">
           </div>
@@ -85,7 +98,7 @@
        <input type = "number" class = "form-control" name = "priority" placeholder ="Enter Priority" min="1">
       </div>
       <div class="col-sm-3">
-          </div>
+          </div>  
    
               </div>
             </div>&nbsp

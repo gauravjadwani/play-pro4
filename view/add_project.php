@@ -1,6 +1,6 @@
 <?php 
 include_once '../common_utilities/header.php';
-include_once '../controller/list_group_project.php';
+include_once '../controller/list_user_groups.php';
 ?>
 <div class="container">
     <div class="row">
@@ -55,7 +55,8 @@ include_once '../controller/list_group_project.php';
                 
                   </div>
                
-        </div>  </div>
+        </div>  
+        </div>
            
 
             

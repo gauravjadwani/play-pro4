@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 //include '../controllers/connection.php';
-//include_once '../controllers/init_session.php';
+//include_once '../controller/.php';
 
 
 include_once '../common_utilities/header.php';
@@ -14,7 +14,7 @@ include_once '../common_utilities/header.php';
                 
                 </div>
             <div class="col-md-6">
-                 <a href="addtask_toproject.php"><button type="button" class="btn btn-primary btn-block">task for project</button> </a>
+                 <a href="add_task_project.php"><button type="button" class="btn btn-primary btn-block">task for project</button> </a>
                 </div>
             </div>
         </div>

@@ -185,6 +185,7 @@ $GLOBALS['r']->hMset('task',array('name:'.$task_id=>$name,'assinged_for:'.$task_
     
     
      $GLOBALS['r']->hincrby('parent','task_id',1);
+
     return $project_id;
     
     
@@ -196,12 +197,18 @@ $GLOBALS['r']->hMset('task',array('name:'.$task_id=>$name,'assinged_for:'.$task_
 
 function add_task_to_self_db($task_id,$user_id)
 {
+    $current_time=time();
 $check=$GLOBALS['r']->hget('task','association:'.$task_id);
     if($check=='null')
     {
        $GLOBALS['r']->hset('task','association:'.$task_id,'self');
-        
-        
+       //$task_name=$GLOBALS['r']->hget('task','name:'.$task_id);
+       
+        $task_name=$GLOBALS['r']->hget('task','name:'.$task_id);
+        user_set_notifications_db($user_id,$current_time,'you have task name:'.$task_name.' to self at '.$current_time);
+
+        add_task_to_user_list_of_tasks_self_db($user_id,$task_id);
+
     }
     else
     {
@@ -214,7 +221,7 @@ $check=$GLOBALS['r']->hget('task','association:'.$task_id);
 
 function add_task_to_user_list_of_tasks_self_db($user_id,$task_id)
 {
-    $list=$GLOBALS['r']->hget('user','list_of_projects:'.$user_id);
+    $list=$GLOBALS['r']->hget('user','list_of_tasks_self:'.$user_id);
     if($list!='null')
     {
       
@@ -229,7 +236,7 @@ function add_task_to_user_list_of_tasks_self_db($user_id,$task_id)
         
         $list_jsonencode=json_encode($list_jsondeocde);
         
-        $GLOBALS['r']->hset('user','list_of_tasks:'.$user_id,$list_jsonencode);
+        $GLOBALS['r']->hset('user','list_of_tasks_self:'.$user_id,$list_jsonencode);
         
         
     }
@@ -241,7 +248,7 @@ function add_task_to_user_list_of_tasks_self_db($user_id,$task_id)
         $j=json_encode($p);
         
         
-    $GLOBALS['r']->hset('user','list_of_tasks:'.$user_id,$j);
+    $GLOBALS['r']->hset('user','list_of_tasks_self:'.$user_id,$j);
         
     }
     
@@ -250,13 +257,21 @@ function add_task_to_user_list_of_tasks_self_db($user_id,$task_id)
 //////////////////////////////////////////////////////////////////////////////////////
 
 
-function add_task_to_project_db($task_id,$user_id)
+function add_task_to_project_db($task_id,$user_id,$project_id)
 {
+    $current_time=time();
 $check=$GLOBALS['r']->hget('task','association:'.$task_id);
     if($check=='null')
     {
-       $GLOBALS['r']->hset('task','association:'.$task_id,'project');
+       $GLOBALS['r']->hset('task','association:'.$task_id,'project:'.$project_id);
         
+        $task_name=$GLOBALS['r']->hget('task','name:'.$task_id);
+        $project_name=$GLOBALS['r']->hget('project','name:'.$project_id);
+        user_set_notifications_db($user_id,$current_time,'you have task name:'.$task_name.' to project name '.$project_name.' at '.$current_time);
+
+        add_task_to_user_list_of_tasks_projects_db($user_id,$task_id);
+        add_task_to_project_list_of_tasks_db($project_id,$task_id);
+
         
     }
     else
@@ -267,10 +282,10 @@ $check=$GLOBALS['r']->hget('task','association:'.$task_id);
 
 }
 
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 function add_task_to_user_list_of_tasks_projects_db($user_id,$task_id)
 {
-    $list=$GLOBALS['r']->hget('user','list_of_projects:'.$user_id);
+    $list=$GLOBALS['r']->hget('user','list_of_tasks_projects:'.$user_id);
     if($list!='null')
     {
       
@@ -285,7 +300,7 @@ function add_task_to_user_list_of_tasks_projects_db($user_id,$task_id)
         
         $list_jsonencode=json_encode($list_jsondeocde);
         
-        $GLOBALS['r']->hset('user','list_of_tasks:'.$user_id,$list_jsonencode);
+        $GLOBALS['r']->hset('user','list_of_tasks_projects:'.$user_id,$list_jsonencode);
         
         
     }
@@ -298,6 +313,42 @@ function add_task_to_user_list_of_tasks_projects_db($user_id,$task_id)
         
         
     $GLOBALS['r']->hset('user','list_of_tasks:'.$user_id,$j);
+        
+    }
+    
+    
+}
+///////////////////////////////////////////////////////////////////////////////////
+function add_task_to_project_list_of_tasks_db($project_id,$task_id)
+{
+    $list=$GLOBALS['r']->hget('user','list_of_tasks:'.$project_id);
+    if($list!='null')
+    {
+      
+        
+        $list_jsondeocde=json_decode($list,true);
+        
+        
+        //$list=array();
+        array_push($list_jsondeocde,$task_id);
+        
+          
+        
+        $list_jsonencode=json_encode($list_jsondeocde);
+        
+        $GLOBALS['r']->hset('user','list_of_tasks:'.$project_id,$list_jsonencode);
+        
+        
+    }
+    else
+    {
+           //$d=array();
+        $p=array($task_id);
+        //array_push($d,$p);
+        $j=json_encode($p);
+        
+        
+    $GLOBALS['r']->hset('user','list_of_tasks:'.$project_id,$j);
         
     }
     
@@ -388,17 +439,45 @@ function get_project_detais_db($project_id)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
+function add_project_toallmembers_group($group_id,$project_id)
+{
 
-function create_group_db($name,$created_on,$closed_on,$created_by)
+  $list_members_id=get_members_group($group_id);
+  foreach () {
+    # code...
+  }
+add_project_to_user_list_of_projects_db($user_id,$project_id);
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+ function  get_user_projects_db($user_id)
+ {
+
+$list_projects=$GLOBALS['r']->hget('user','list_of_projects:'.$user_id);
+     if($list_projects!='null')
+     {
+     $list_projects_json=json_decode($list_projects,true);
+     return $list_projects_json;
+     }
+     else
+         return 'empty projects';
+
+
+ }
+////////////////////////////////////////////////////////////////////////////////////////
+
+function create_group_db($name,$created_on,$closed_on,$created_by,$list_of_)
     {
         
             $GLOBALS['r']->hsetnx('parent','group_id','1');
              $group_id=$GLOBALS['r']->hget('parent','group_id');
-    $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on,'created_by:'.$group_id=>$created_by)); 
+    $GLOBALS['r']->hMset('group',array('name:'.$group_id=>$name,'created_on:'.$group_id=>$created_on,'closed_on:'.$group_id=>$closed_on,'created_by:'.$group_id=>$created_by,'list_of_projects:'.$group_id=>$list_of_projects)); 
     $GLOBALS['r']->hincrby('parent','group_id',1);
         $email_user_id=$GLOBALS['r']->hget('user','email:'.$created_by);
         
-        set_permissions_for_group_db($group_id,$email_user_id,1);
+        
        return $group_id;
         }
 /////////////////////////////////////////////////////////////////////////////
@@ -461,7 +540,7 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
     if($user_id!='false')
     {
     $current_time=time();
-    if($token==0)
+    if($token==1)
     {
     $value='you created the group '.$group_name.' ';
         }
@@ -476,8 +555,8 @@ function set_permissions_for_group_db($group_id,$list_of_email,$token)
     }
         
            
-            user_set_notifications_db($user_id,$current_time,$value);
-         add_group_to_user_list_of_groups_db($user_id,$group_id);
+            user_set_notifications_db($user_id_email,$current_time,$value);
+         add_group_to_user_list_of_groups_db($user_id_email,$group_id);
 }
     else
     {
@@ -518,6 +597,51 @@ function check_user_permission_for_group_db($group_id,$user_id)
      else
          return 'empty group';
      
+ }
+/////////////////////////////////////////////////////////////////////////////////////
+ function get_group_details_db($group_id)
+{
+    $group_details=array();
+   array_push($group_details,$group_id);
+    $group_name=$GLOBALS['r']->hget('group','name:'.$group_id);
+     array_push($group_details,$group_name);
+    $created_on=$GLOBALS['r']->hget('group','created_on:'.$group_id);
+     array_push($group_details,$created_on);
+    $closed_on=$GLOBALS['r']->hget('group','closed_on:'.$group_id);
+     array_push($group_details,$closed_on);
+    $created_by=$GLOBALS['r']->hget('group','created_by:'.$group_id);
+     array_push($group_details,$created_by);
+    $list_of_group_projects=get_group_projects_db($group_id);
+    array_push($group_details,$list_of_group_projects);
+
+    
+    return $group_details;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+    function  get_group_projects_db($group_id)
+ {
+
+$list_projects=$GLOBALS['r']->hget('group','list_of_projects:'.$group_id);
+     if($list_projects!='null')
+     {
+     $list_projects_json=json_decode($list_projects,true);
+     return $list_projects_json;
+     }
+     else
+         return 'empty projects';
+
+
+ }
+ /////////////////////////////////////////////////////////////////////////////////////////
+ function get_members_group($group_id)
+ {
+
+$list_members_of_group=$GLOBALS['r']->zrange('group_permissions:'.$group_id,0,-1);
+if(!empty($list_members_of_group))
+return $list_members_of_group;
+else
+  return 'no memebers';
+
  }
 
 ?>
